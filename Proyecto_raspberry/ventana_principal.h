@@ -51,6 +51,14 @@ private slots:
      */
     void maquina_estados();
 
+    /**
+     * @brief insertar_interacciones esta funcion nos ingresara el estado de la maquina de estados el boton que presiono y el
+     * usuario que esta utilizando la maquina de estados y lo ingresara con la fecha y hora en la que oprimio el boton y esta funcion
+     * la llamaremos en la funcion maquina_estados
+     * @param user es el usuario que ingreso a la aplicacion y que esta utilizando la maquina de estados
+     * @param boton es el boton que oprimio el usuario y lo vamos a pasar en la funcion de maquina_estados
+     * @param estado es el estado actual de la maquina de estados
+     */
     void insertar_interacciones(QString user,QString boton,QString estado);
 
 private:

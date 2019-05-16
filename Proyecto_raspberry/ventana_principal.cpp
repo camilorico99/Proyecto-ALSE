@@ -19,6 +19,7 @@ Ventana_Principal::Ventana_Principal(QWidget *parent) :
     qDebug()<<"Se ha conectado a la base de datos.";}
     else{
     qDebug()<<"Error, no se ha abierto la base de datos.";}
+
     timer = new QTimer(this);
     timer->setInterval(2000);
     connect(timer,SIGNAL(timeout()), this, SLOT(maquina_estados()));
@@ -43,11 +44,8 @@ void Ventana_Principal::recibo_usuario(QString user_name){
             ui->label_apellido->setText((char*)sqlite3_column_text(pStmt,4));
             ui->label_doc_identidad->setText((char*)sqlite3_column_text(pStmt,5));
             ui->label_fechaNacimiento->setText((char*)sqlite3_column_text(pStmt,6));
-            ui->label_edad->setText(QString::number(calcular_edad(user_name)));
-
-        }
-    }
-}
+            ui->label_edad->setText(QString::number(calcular_edad(user_name)));}}
+    sqlite3_close_v2(db);}
 
 int Ventana_Principal::calcular_edad(QString user){
     QString nacimiento;
@@ -76,10 +74,17 @@ int Ventana_Principal::calcular_edad(QString user){
             edad=time->tm_year+1900-year-1;}
         else{
             edad=time->tm_year+1900-year;}}
-    sqlite3_close(db);
+    sqlite3_close_v2(db);
     return edad;}
 
 void Ventana_Principal::insertar_interacciones(QString user, QString button,QString estado){
+    string path = "db_proyecto.db" ;
+    int rc1;
+
+    rc1 = sqlite3_open(path.c_str(), &db);
+    if(rc1 == SQLITE_OK){
+        qDebug()<< "abrio";
+    }
     string insertar;
     QString fecha;
     int day,month, year;
@@ -93,9 +98,9 @@ void Ventana_Principal::insertar_interacciones(QString user, QString button,QStr
     fecha.append( QString::number(day));fecha.append( "/");fecha.append( QString::number(month));fecha.append( "/");
     fecha.append( QString::number(year));fecha.append("  ");fecha.append(QString::number(time->tm_hour));fecha.append(":");
     fecha.append(QString::number(time->tm_min));fecha.append(":");fecha.append(QString::number(time->tm_sec));
-    sqlite3_db_cacheflush(db);
-    insertar.append("INSERT INTO registros(fecha,user_name,boton,estado)"
+    insertar.append("INSERT INTO registros(fecha,user_name,boton,estado) "
                    "VALUES('"+fecha.toStdString()+"','"+user.toStdString()+"','"+button.toStdString()+"','"+estado.toStdString()+"');");
+    qDebug()<< insertar.c_str();
     rc = sqlite3_exec(db,insertar.c_str(),0,0,&zErrMsg);
     if(rc != SQLITE_OK){
         qDebug()<< "no inserto " << zErrMsg;
