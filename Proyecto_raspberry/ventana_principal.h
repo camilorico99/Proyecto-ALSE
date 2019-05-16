@@ -26,7 +26,8 @@ class Ventana_Principal : public QMainWindow
 public:
     explicit Ventana_Principal(QWidget *parent = 0);
     ~Ventana_Principal();
-    enum estado{A,B,C,D};
+    enum estado{A=1,B,C,D};
+    estado est;
 
 private slots:
 
@@ -68,7 +69,6 @@ private:
      * @brief timer definimos un puntero a QTimer llamado timer
      */
     QTimer* timer;
-    estado *est;
 };
 
 #endif // VENTANA_PRINCIPAL_H

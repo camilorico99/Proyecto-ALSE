@@ -76,7 +76,6 @@ int Ventana_Principal::calcular_edad(QString user){
             edad=time->tm_year+1900-year-1;}
         else{
             edad=time->tm_year+1900-year;}}
-    sqlite3_close(db);
     return edad;}
 
 void Ventana_Principal::insertar_interacciones(QString user, QString button,QString estado){

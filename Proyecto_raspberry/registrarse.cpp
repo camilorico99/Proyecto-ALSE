@@ -41,7 +41,7 @@ void registrarse::creartabla_usuario(){
                  ",documento_id TEXT NOT NULL UNIQUE,fecha_nacimiento TEXT NOT NULL);");
     rc = sqlite3_exec(db, consulta.c_str(), 0, 0, &zErrMsg);
     consulta.clear();
-    consulta.append("CREATE TABLE IF NOT EXISTS registros(fecha TEXT NOT NULL, usuario TEXT NOT NULL, boton TEXT NOT NULL, estado TEXT NOT NULL);");
+    consulta.append("CREATE TABLE IF NOT EXISTS registros(fecha TEXT NOT NULL, user_name TEXT NOT NULL, boton TEXT NOT NULL, estado TEXT NOT NULL);");
     rc = sqlite3_exec(db, consulta.c_str(), 0, 0, &zErrMsg);
 
     if(rc == SQLITE_OK){
