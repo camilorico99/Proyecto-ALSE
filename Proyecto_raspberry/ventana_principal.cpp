@@ -19,14 +19,10 @@ Ventana_Principal::Ventana_Principal(QWidget *parent) :
     qDebug()<<"Se ha conectado a la base de datos.";}
     else{
     qDebug()<<"Error, no se ha abierto la base de datos.";}
-    est = maquina_estados();
     timer = new QTimer(this);
     timer->setInterval(2000);
     connect(timer,SIGNAL(timeout()), this, SLOT(maquina_estados()));
     timer->start();
-    //connect(this,SIGNAL(enviar_estado(enum)),this,SLOT(maquina_estados(enum)));
-    //connect(this,SIGNAL(enviar_user(QString)),this,SLOT(insertar_interacciones(QString,NULL,NULL)));
-    //connect(this,SIGNAL(enviar_estado(int)),this,SLOT(insertar_interacciones(NULL,NULL,int)));
 }
 
 Ventana_Principal::~Ventana_Principal(){
@@ -34,7 +30,6 @@ Ventana_Principal::~Ventana_Principal(){
 }
 
 void Ventana_Principal::recibo_usuario(QString user_name){
-    emit enviar_user(user_name);
     string consulta;
     int rc;
     sqlite3_stmt *pStmt;
@@ -178,7 +173,7 @@ QString Ventana_Principal::maquina_estados(){
         digitalWrite(5,LOW);
         delay(1000);
         break;
-        return est;
+        return;
     }}
 
 
