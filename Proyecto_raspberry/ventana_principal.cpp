@@ -20,7 +20,7 @@ Ventana_Principal::Ventana_Principal(QWidget *parent) :
     else{
     qDebug()<<"Error, no se ha abierto la base de datos.";}
     timer = new QTimer(this);
-    timer->setInterval(2000);
+    timer->setInterval(3000);
     connect(timer,SIGNAL(timeout()), this, SLOT(maquina_estados()));
     timer->start();
 }
@@ -77,35 +77,50 @@ int Ventana_Principal::calcular_edad(QString user){
             edad=time->tm_year+1900-year;}}
     return edad;}
 
-//void Ventana_Principal::insertar_interacciones(QString user, QString boton, int estado){
-  //  string insertar;
-    //char *zErrMsg = 0;
-    //int rc;
-    //time_t now =time(0);
-    //tm * time =localtime(&now);
-    //QString fecha;
-    //fecha.append("as");
-    //qDebug()<< time->tm_mon ;
-    //insertar.append("INSERT INTO registros(fecha,usuario,boton,estado)"
-      //              "VALUES('"+fecha+"','"+user+"','"+boton+"','"+estado+"');");
+void Ventana_Principal::insertar_interacciones(QString user, QString button,QString estado){
+    string insertar;
+    QString fecha;
+    int day,month, year;
+    char *zErrMsg = 0;
+    int rc;
+    time_t now =time(0);
+    tm * time =localtime(&now);
+    year = time->tm_year+1900;
+    month = time->tm_mon+1;
+    day = time->tm_mday;
+    fecha.append( QString::number(day));fecha.append( "/");fecha.append( QString::number(month));fecha.append( "/");
+    fecha.append( QString::number(year));fecha.append("  ");fecha.append(QString::number(time->tm_hour));fecha.append(":");
+    fecha.append(QString::number(time->tm_min));fecha.append(":");fecha.append(QString::number(time->tm_sec));
 
-    //rc = sqlite3_exec(db, insertar.c_str(), 0, 0, &zErrMsg);
-//}
+    insertar.append("INSERT INTO registros(fecha, usuario, boton, estado)"
+                   "VALUES('"+fecha.toStdString()+"','"+user.toStdString()+"','"+button.toStdString()+"','"+estado.toStdString()+"');");
 
-QString Ventana_Principal::maquina_estados(){
-    estado est;
+    rc = sqlite3_exec(db, insertar.c_str(), 0, 0, &zErrMsg);
+    if(rc != SQLITE_OK){
+        qDebug()<< "no inserto " << zErrMsg;
+    }
+}
+
+void Ventana_Principal::maquina_estados(){
+        estado est;
     pinMode(3,OUTPUT);
     pinMode(4,OUTPUT);
     pinMode(5,OUTPUT);
-    if (est!=A,est!=B,est!=C,est!=D){
-        est=A;}
+    if (est!=A){
+        if (est!=B){
+            if (est!=C){
+                if (est!=D){
+        est=A;}}}}
     bool btn1, btn2, btn3;
     btn1 = btn2 = btn3 = true;
         qDebug()<< est ;
         btn1 = digitalRead(0);
         btn2 = digitalRead(1);
         btn3 = digitalRead(2);
+        string as;
+        as = to_string(est);
         if( btn1 ){
+            insertar_interacciones("kmilo9905","btn1",as.c_str());
             qDebug()<< "boton 1";
             if(est == A ){
                est = B;}
@@ -113,6 +128,7 @@ QString Ventana_Principal::maquina_estados(){
                est = A;}
             }
         if( btn2 ){
+            insertar_interacciones("kmilo9905","btn1",as.c_str());
             qDebug()<< "boton 2";
             if(est==B ){
                 est = C;}
@@ -121,13 +137,13 @@ QString Ventana_Principal::maquina_estados(){
             else if(est == D){
                 est = B;}}
         if( btn3 ){
+            insertar_interacciones("kmilo9905","btn1",as.c_str());
             qDebug()<< "boton 3" ;
             if(est == C ){
                 est = D;}
         }
-        string as;
-        as = to_string(est);
         ui->label_estado->setText(as.c_str());
+        insertar_interacciones("kmilo9905","btn1",as.c_str());
     switch(est){
     case A:
         digitalWrite(3,LOW);
@@ -163,17 +179,16 @@ QString Ventana_Principal::maquina_estados(){
         digitalWrite(3,LOW);
         digitalWrite(4,LOW);
         digitalWrite(5,HIGH);
-        delay(1000);
+        delay(660);
         digitalWrite(3,LOW);
         digitalWrite(4,HIGH);
         digitalWrite(5,LOW);
-        delay(1000);
+        delay(660);
         digitalWrite(3,HIGH);
         digitalWrite(4,LOW);
         digitalWrite(5,LOW);
-        delay(1000);
+        delay(660);
         break;
-        return;
     }}
 
 
